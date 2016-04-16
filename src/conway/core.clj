@@ -1,5 +1,6 @@
 (ns conway.core
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.set]))
 
 ; https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 ; TODO still need cell resurrection logic
@@ -29,14 +30,14 @@
   "Test if living cell survives to the next generation"
   [living-cell living-cells]
   (let [total-living-neighbors (count (get-living-neighbors living-cell living-cells))]
-    (and (> 1 total-living-neighbors) (< 4 total-living-neighbors))))
+    (and (> total-living-neighbors 1) (< total-living-neighbors 4))))
 
 (defn get-next-board-state
   "Take the current board state and return the next"
   [living-cells]
   (loop [[living-cell & remaining-living-cells] living-cells
          next-generation-living-cells []]
-    (if (empty? remaining-living-cells)
+    (if (empty? living-cell)
       next-generation-living-cells
       (if (cell-is-alive? living-cell living-cells)
         (recur remaining-living-cells
